@@ -1,25 +1,31 @@
+import ModelUser from "../model/users.js"
+
 class ServiceUser {
 
     FindAll(){
-        return ["hi", "bye"]
+        return ModelUser.FindAll()
     }
 
-    FindOne(){
-        return 1
+    FindOne(index){
+        //verifica se o index é valido
+        return ModelUser.FindOne(index)
     }
     
-    Create(){
-        return 1
+    Create(nome){
+        //verifica se o nome é valido
+        return ModelUser.Create(nome)
     }
 
-    Update(){
-        return 1
+    Update(index, nome){
+        //verificar se o index e o nome sao validos
+        return ModelUser.Update(index, nome)
     }
 
-    Delete(){
-        return 1
+    Delete(index){
+        //verificar se o index é valido
+        return ModelUser.Delete(index)
     }
 
 }
 
-export default new ServiceUser
+export default new ServiceUser()
