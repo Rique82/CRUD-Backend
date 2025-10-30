@@ -14,12 +14,12 @@ FindAll (_, res){
     
 }
 
-FindOne (req,res){
+async FindOne (req,res){
     try {
+        const id = req.params.id
 
-        const index = req.params.index
-        const nome = ServiceUser.FindOne(index)
-        res.status(200).send({ nome })
+        const user = await ServiceUser.FindOne(id)
+        res.status(200).send({ user })
 
     } catch (error) {
         res.status(500).send({error: error.message})
@@ -27,23 +27,23 @@ FindOne (req,res){
     
 }
 
-Create (req,res){
+async Create (req,res){
     try {
 
-        const nome = req.body.nome
-        ServiceUser.Create(nome)
-        res.status(201).send()
+        const { nome, email, senha, ativo } = req.body
+        await ServiceUser.Create(nome, email, senha, ativo)
+        res.status(201).send("Usuario criado com sucesso")
 
     } catch (error) {
         res.status(500).send({error: error.message})
     }
     
 }
-Update (req,res){
+async Update (req,res){
     try {
-        const index = req.params.index
-        const nome = req.body.nome
-        ServiceUser.Update(index,nome)
+        const id = req.params.id
+        const {nome, email, senha, ativo} = req.body
+        ServiceUser.Update(id, nome, email, senha, ativo)
         res.status(200).send()
 
     } catch (error) {
@@ -51,11 +51,11 @@ Update (req,res){
     }
     
 }
-Delete (req,res){
+async Delete (req,res){
     try {
-        const index = req.params.index
-        ServiceUser.Delete(index)
-        res.status(204).send(resultado)
+        const id = req.params.id
+        await ServiceUser.Delete(id)
+        res.status(204).send("usuario deletado com sucesso")
 
     } catch (error) {
         res.status(500).send({error: error.message})
