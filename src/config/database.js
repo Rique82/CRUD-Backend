@@ -1,19 +1,18 @@
-import { Sequelize } from "sequelize"
+import { Sequelize } from 'sequelize'
 
-class Database {
+class BancoDados {
     constructor() {
         this.init()
     }
 
-    init(){
+    init() {
         this.db = new Sequelize({
-            database: "exemplo",
-            host: "localhost",
-            username: "root",
-            password: "",
-            dialect: "mysql"
+            database: 'estoque',
+            host: 'localhost',
+            username: 'root',
+            password: '',
+            dialect: 'mysql'
         })
     }
 }
-
-export default new Database()
+export default new BancoDados()
