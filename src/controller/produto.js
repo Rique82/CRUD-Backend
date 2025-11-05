@@ -15,7 +15,9 @@ class ControllerProduto {
 
     async PegarUm(req, res) {
         try {
-            res.status(200).send('oi')
+            const id = req.params.id
+            const produto = await ServiceProduto.PegarUm(id)
+            res.status(200).send({produto})
         } catch (error) {
             res.status(500).send({ msg: error.message })
         }
@@ -28,15 +30,21 @@ class ControllerProduto {
             
             await ServiceProduto.Criar(nome, disponivel, qtde)
 
-            res.status(201).send()
+            res.status(201).send("produto criado com sucesso")
         } catch (error) {
             res.status(500).send({ msg: error.message })
         }
     }
 
     async Alterar(req, res) {
-        try {
-            res.status(200).send('oi')
+        try {   
+            const id = req.params.id
+            // const { nome, disponivel, qtde} = req.body
+            const nome = req.body?.nome
+            const disponivel = req.body?.nome
+            const qtde =req.body?.nome
+            await ServiceProduto.Alterar(id, nome, disponivel, qtde)
+            res.status(200).send("usuario alterado com sucesso")
         } catch (error) {
             res.status(500).send({ msg: error.message })
         }
@@ -44,7 +52,9 @@ class ControllerProduto {
 
     async Deletar(req, res) {
         try {
-            res.status(200).send('oi')
+            const id = req.params.id
+            await ServiceProduto.Deletar(id)
+            res.status(204).send("usuario deletado com sucesso")
         } catch (error) {
             res.status(500).send({ msg: error.message })
         }
