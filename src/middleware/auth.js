@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken"
+import ServiceUser from "../service/users.js"
 
 const JWT_SEGREDO = "blackdiamond"
 
-export default function authMiddleware(req, res, next) {
+export default async function authMiddleware(req, res, next) {
 
     try {
 
@@ -14,8 +15,10 @@ export default function authMiddleware(req, res, next) {
         }
 
         const decoded = jwt.verify(token.split(' ')[1], JWT_SEGREDO)
-        
 
+        const user = await ServiceUser.FindOne(decoded.id)
+        
+        req.headers.user = user
         console.log(decoded)
         next()
 
