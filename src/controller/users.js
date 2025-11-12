@@ -17,7 +17,7 @@ class ControllerUser {
 
     async FindOne(req, res) {
         try {
-            const id = req.params.id
+            const id = req.params.id || req.headers?.user?.id
 
             const user = await ServiceUser.FindOne(id)
             res.status(200).send({ user })
@@ -31,8 +31,13 @@ class ControllerUser {
     async Create(req, res) {
         try {
 
+            const loggedUser = req.headers?.user
+            let permissao = 1
+            if (loggedUser) {
+                permissao = req.body.permissao
+            }
             const { nome, email, senha, ativo } = req.body
-            await ServiceUser.Create(nome, email, senha, ativo, 1)
+            await ServiceUser.Create(nome, email, senha, ativo, permissao)
             res.status(201).send("Usuario criado com sucesso")
 
         } catch (error) {
@@ -43,7 +48,9 @@ class ControllerUser {
 
     async Update(req, res) {
         try {
-            const id = req.params.id
+
+            const id = req.params.id || req.headers?.user?.id
+
             const { nome, email, senha, ativo } = req.body
             ServiceUser.Update(id, nome, email, senha, ativo)
             res.status(200).send()
@@ -55,7 +62,7 @@ class ControllerUser {
     }
     async Delete(req, res) {
         try {
-            const id = req.params.id
+            const id = req.params.id || req.headers?.user?.id
             await ServiceUser.Delete(id)
             res.status(204).send("usuario deletado com sucesso")
 
@@ -65,18 +72,18 @@ class ControllerUser {
 
     }
 
-    async Login(req, res){
+    async Login(req, res) {
 
-            try {
+        try {
 
-                const { email, senha } = req.body
-                const token = await ServiceUser.Login(email, senha)
-                res.status(200).send({ token })
-            } catch (error) {
-                res.status(500).send({ error: error.message })
-            }
-
+            const { email, senha } = req.body
+            const token = await ServiceUser.Login(email, senha)
+            res.status(200).send({ token })
+        } catch (error) {
+            res.status(500).send({ error: error.message })
         }
+
+    }
 
 }
 
