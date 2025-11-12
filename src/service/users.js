@@ -1,6 +1,8 @@
 import User from "../model/users.js"
 import jwt from "jsonwebtoken"
+import bcrypt from 'bcrypt'
 const JWT_SEGREDO = "blackdiamond"
+const SALT = 10
 
 class ServiceUser {
 
@@ -22,31 +24,26 @@ class ServiceUser {
         return user
     }
     
-    async Create(nome, email, senha, ativo){
+    async Create(nome, email, senha, ativo, permissao){
         if (!nome || !email || !senha ) {
             throw new Error("Favor preencher todos os campos")
         }
 
+        const senhaCrip = await bcrypt.hash(String(senha), SALT)
+
         await User.create({
-            nome, email, senha, ativo
+            nome, email, senha: senhaCrip, ativo, permissao
         })
     }
 
     async Update(id, nome, email, senha, ativos){
-        if(!id | !nome | !email | !senha){
-            throw new Error("Favor preencher todos campos")
-        }
-
-        const user = await User.findByPk(id)
         
-        if(!user){
-            throw new Error(`usuário ${id} não foi encontrado`)
-        }
-
-        user.nome = nome
-        user.email = email
+        const user = await User.findByPk(id)
         user.senha = senha
-        user.ativo = ativos
+        ? await bcrypt.hash(String(senha), SALT)
+        : user.senha
+        
+        user.nome = nome || user.nome
         
         await user.save()
     }
@@ -72,12 +69,12 @@ class ServiceUser {
 
         const user = await User.findOne({ where: { email }} )
         
-        if(!user || await user.senha !== senha){
+        if(!user || !(await bcrypt.compare(String(senha), user.senha))){
             throw new Error("email ou senha invalidos")
         }
 
         return jwt.sign(
-            { id: user.id,nome: user.nome }, 
+            { id: user.id,nome: user.nome, permissao: user.permissao }, 
             JWT_SEGREDO, {expiresIn: 60*60})
     }
 

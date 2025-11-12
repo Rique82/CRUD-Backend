@@ -6,6 +6,7 @@ class ControllerUser {
         try {
 
             const nomes = ServiceUser.FindAll()
+            console.log(nomes)
             res.status(200).send({ nomes })
 
         } catch (error) {
@@ -31,7 +32,7 @@ class ControllerUser {
         try {
 
             const { nome, email, senha, ativo } = req.body
-            await ServiceUser.Create(nome, email, senha, ativo)
+            await ServiceUser.Create(nome, email, senha, ativo, 1)
             res.status(201).send("Usuario criado com sucesso")
 
         } catch (error) {
@@ -39,6 +40,7 @@ class ControllerUser {
         }
 
     }
+
     async Update(req, res) {
         try {
             const id = req.params.id
